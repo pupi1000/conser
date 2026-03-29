@@ -9,7 +9,7 @@ import {
 import logoCoplumu from './assets/conser1.png'; // Tu logo circular
 import conser2 from './assets/conser2.jpg';     // Imagen carrusel 1
 import conser3 from './assets/conser3.png';     // Imagen carrusel 2 (png)
-import conser4 from './assets/conser4.jpg';     // Imagen carrusel 3
+import conser4 from './assets/conser4.png';     // Imagen carrusel 3
 
 // === CONFIGURACIÓN DE COLORES ===
 const colors = {
