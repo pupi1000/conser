@@ -11,7 +11,7 @@ import conser2 from './assets/conser2.jpg';
 import conser3 from './assets/conser3.png';     
 import conser4 from './assets/conser4.png'; 
 import conser5 from './assets/conser5.jpg';    
-import calendario1 from './assets/calendario1.jpg'; // Imágenes del calendario
+import calendario1 from './assets/calendario1.jpg'; 
 import calendario2 from './assets/calendario2.jpg';
 import calendario3 from './assets/calendario3.jpg';
 
@@ -49,8 +49,7 @@ const centralizadoresData = [
   { title: 'Notas Anuales', desc: 'Calificaciones de materias con modalidad anual.', type: 'Anual', link: 'https://drive.google.com/drive/folders/1_Lnsfu7CxiQOKQ8rXo9Vc7goT2uKi1as' },
 ];
 
-// Dejamos los eventos vacíos para el futuro
-const eventosData = [];
+const eventosData = []; 
 
 // === COMPONENTES PEQUEÑOS ===
 
@@ -273,9 +272,7 @@ const CentralizadoresView = () => (
   </div>
 );
 
-const PlanesView = () => {
-  const [activeFolderId, setActiveFolderId] = useState(null);
-
+const PlanesView = ({ activeFolderId, onFolderOpen, onFolderClose }) => {
   const carpetasEstructura = [
     {
       id: 'proyecto',
@@ -286,9 +283,14 @@ const PlanesView = () => {
     },
     {
       id: 'malla',
-      title: 'Malla Curricular',
+      title: 'Malla Curricular y Programas de Estudio',
       desc: 'Estructura general de las materias por año y semestre.',
-      isLink: false
+      isLink: false,
+      // NUEVAS SUBCARPETAS AGREGADAS AQUÍ
+      subFolders: [
+        { title: 'Programas Materias Teóricas', desc: 'Materias teóricas y complementarias.', link: 'https://drive.google.com/drive/folders/EJEMPLO_TEORICAS' }, // Reemplaza este link
+        { title: 'Programas Instrumentos', desc: 'Especialidades instrumentales.', link: 'https://drive.google.com/drive/folders/EJEMPLO_INSTRUMENTOS' } // Reemplaza este link
+      ]
     },
     {
       id: 'planes2025',
@@ -326,7 +328,7 @@ const PlanesView = () => {
           {carpetasEstructura.map((folder) => (
             <div 
               key={folder.id}
-              onClick={() => folder.isLink ? window.open(folder.link, '_blank') : setActiveFolderId(folder.id)}
+              onClick={() => folder.isLink ? window.open(folder.link, '_blank') : onFolderOpen(folder.id)}
               className="cursor-pointer block p-7 rounded-3xl shadow-sm border border-slate-200/80 active:scale-[0.98] transition-all duration-150 overflow-hidden group h-full flex flex-col"
               style={{ backgroundColor: colors.cardBg }}
             >
@@ -352,7 +354,7 @@ const PlanesView = () => {
       ) : (
         <div className="animate-fade-in-up">
           <button 
-            onClick={() => setActiveFolderId(null)}
+            onClick={onFolderClose}
             className="flex items-center gap-2 text-slate-600 font-bold mb-6 hover:text-slate-900 transition-colors active:scale-95 px-4 py-2 bg-slate-100 rounded-xl w-fit border border-slate-200 shadow-sm"
           >
             <ChevronLeft size={20} /> Volver a Carpetas
@@ -364,15 +366,45 @@ const PlanesView = () => {
           </h2>
 
           {activeFolder.id === 'malla' ? (
-            <div className="w-full flex justify-center">
-                <div className="bg-white p-6 md:p-10 rounded-[3rem] shadow-xl border-4 border-white flex justify-center items-center overflow-hidden w-full max-w-5xl" style={{ backgroundColor: colors.cardBg }}>
-                   <img 
-                     src={conser5} 
-                     alt="Malla Curricular Completa" 
-                     className="object-contain drop-shadow-md w-full" 
-                     style={{ maxHeight: MALLA_IMAGE_MAX_HEIGHT }} 
-                   />
-                </div>
+            <div className="flex flex-col gap-8">
+              {/* IMAGEN DE LA MALLA */}
+              <div className="w-full flex justify-center">
+                  <div className="bg-white p-6 md:p-10 rounded-[3rem] shadow-xl border-4 border-white flex justify-center items-center overflow-hidden w-full max-w-5xl" style={{ backgroundColor: colors.cardBg }}>
+                     <img 
+                       src={conser5} 
+                       alt="Malla Curricular Completa" 
+                       className="object-contain drop-shadow-md w-full" 
+                       style={{ maxHeight: MALLA_IMAGE_MAX_HEIGHT }} 
+                     />
+                  </div>
+              </div>
+              
+              {/* NUEVAS CARPETAS DE PROGRAMAS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                {activeFolder.subFolders.map((sub, idx) => (
+                  <a 
+                    key={idx}
+                    href={sub.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block p-7 rounded-3xl shadow-sm border border-slate-200/80 active:scale-[0.98] transition-all duration-150 overflow-hidden group"
+                    style={{ backgroundColor: colors.cardBg }}
+                  >
+                    <div className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ backgroundColor: colors.accent }}></div>
+                    <div className="flex items-center gap-4 mb-4">
+                       <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm text-white" style={{ backgroundColor: colors.sidebarBg }}>
+                         <FolderOpen size={24} />
+                       </div>
+                       <h3 className="text-lg font-bold text-slate-800 group-hover:text-[#163329] transition-colors leading-tight">{sub.title}</h3>
+                    </div>
+                    <p className="text-sm text-slate-500 mb-6">{sub.desc}</p>
+                    <div className="flex items-center text-sm font-bold gap-2 text-slate-700 bg-white py-3.5 px-4 rounded-xl border border-slate-200 group-hover:bg-slate-50 transition-colors shadow-sm justify-center">
+                      <ExternalLink size={18} style={{ color: colors.sidebarBg }}/> 
+                      Abrir en Google Drive
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -407,7 +439,6 @@ const PlanesView = () => {
   );
 };
 
-// === NUEVA VISTA: CALENDARIO COMO DOCUMENTO CONTINUO ===
 const CalendarioView = () => (
   <div className="animate-fade-in pb-12">
     <div className="mb-10">
@@ -416,15 +447,12 @@ const CalendarioView = () => (
     </div>
 
     <div className="flex flex-col gap-10">
-      
-      {/* SECCIÓN DEL CALENDARIO OFICIAL (VISOR DE IMÁGENES TIPO PDF) */}
       <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-lg border border-slate-200/60" style={{ backgroundColor: colors.cardBg }}>
         <h2 className="text-2xl font-black text-slate-800 tracking-tight mb-8 flex items-center gap-3 border-b border-slate-200 pb-4">
           <CalendarDays size={28} style={{ color: colors.accent }} />
           Calendario Oficial 2026
         </h2>
         
-        {/* Contenedor de las 3 imágenes apiladas */}
         <div className="flex flex-col gap-6 items-center w-full max-w-4xl mx-auto bg-slate-50 p-4 md:p-8 rounded-3xl border border-slate-200 shadow-inner">
            <img src={calendario1} alt="Calendario Parte 1" className="w-full object-contain rounded-xl shadow-md border border-slate-300/50 bg-white" />
            <img src={calendario2} alt="Calendario Parte 2" className="w-full object-contain rounded-xl shadow-md border border-slate-300/50 bg-white" />
@@ -432,20 +460,40 @@ const CalendarioView = () => (
         </div>
       </div>
 
-      {/* SECCIÓN DE PRÓXIMOS EVENTOS (Vacía para el futuro) */}
       <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-lg border border-slate-200/60" style={{ backgroundColor: colors.cardBg }}>
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200/60">
           <Bell size={26} style={{ color: colors.accent }} />
-          <h2 className="text-2xl font-black text-slate-800 tracking-tight">Próximos Eventos</h2>
+          <h2 className="text-2xl font-black text-slate-800 tracking-tight">Actividades artísticas</h2>
         </div>
+
+        <a 
+          href="https://drive.google.com/drive/folders/17Wl540uYPfB8BQtaZE3dKzs6YIXByN4S" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center justify-between p-5 mb-8 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md active:scale-[0.98] transition-all duration-300 group bg-white"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105" style={{ backgroundColor: colors.sidebarBg }}>
+              <FolderOpen size={24} />
+            </div>
+            <div>
+              {/* CAMBIO DE TEXTO A "Acceso al drive" */}
+              <h3 className="text-lg font-bold text-slate-800 group-hover:text-[#163329] transition-colors leading-tight">Acceso al drive</h3>
+              <p className="text-xs sm:text-sm text-slate-500">Accede a la carpeta oficial en Google Drive</p>
+            </div>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#163329] group-hover:text-white transition-colors duration-300">
+            <ExternalLink size={16} />
+          </div>
+        </a>
         
         {eventosData.length > 0 ? (
           <div className="space-y-4">
             {eventosData.map((evento, index) => (
               <div key={index} className="flex items-center p-4 rounded-2xl active:bg-slate-100 transition-colors border border-slate-100 bg-white shadow-sm">
                 <div className="w-20 text-center border-r border-slate-200/80 pr-4 mr-4 shrink-0">
-                  <span className="block text-2xl font-black leading-none" style={{ color: colors.sidebarBg }}>{evento.date.split(' ')[0]}</span>
-                  <span className="block text-[11px] font-bold text-slate-400 uppercase mt-1.5">{evento.date.split(' ')[1]}</span>
+                  <span className="block text-xl font-black leading-none" style={{ color: colors.sidebarBg }}>{evento.date.split(' ')[0]}</span>
+                  <span className="block text-[10px] font-bold text-slate-400 uppercase mt-1.5">{evento.date.split(' ')[1]}</span>
                 </div>
                 <div>
                   <h4 className="text-lg font-bold text-slate-800 leading-tight mb-1">{evento.title}</h4>
@@ -455,17 +503,15 @@ const CalendarioView = () => (
             ))}
           </div>
         ) : (
-          // MENSAJE CUANDO NO HAY EVENTOS
-          <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-             <div className="w-20 h-20 bg-slate-100 text-slate-300 rounded-full flex items-center justify-center mb-4">
-                <Bell size={40} />
+          <div className="flex flex-col items-center justify-center py-10 px-4 text-center border-t border-slate-100 border-dashed">
+             <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-4">
+                <Bell size={32} />
              </div>
-             <h3 className="text-xl font-bold text-slate-700 mb-2">No hay eventos programados</h3>
-             <p className="text-slate-500 max-w-md">Por el momento no hay actividades o eventos próximos en el cronograma. Mantente al tanto de futuras actualizaciones.</p>
+             <h3 className="text-lg font-bold text-slate-700 mb-2">No hay eventos programados</h3>
+             <p className="text-sm text-slate-500 max-w-md">Por el momento no hay actividades o eventos próximos en el cronograma. Mantente al tanto de futuras actualizaciones.</p>
           </div>
         )}
       </div>
-
     </div>
   </div>
 );
@@ -474,7 +520,25 @@ const CalendarioView = () => (
 
 export default function App() {
   const [activeView, setActiveView] = useState('Inicio');
+  const [activeFolderId, setActiveFolderId] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    window.history.replaceState({ view: 'Inicio', folderId: null }, '');
+
+    const handlePopState = (event) => {
+      if (event.state) {
+        setActiveView(event.state.view || 'Inicio');
+        setActiveFolderId(event.state.folderId || null);
+      } else {
+        setActiveView('Inicio');
+        setActiveFolderId(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const navItems = [
     { view: 'Inicio', label: 'Inicio', icon: Home },
@@ -485,14 +549,25 @@ export default function App() {
   ];
 
   const handleNavClick = (view) => {
+    if (activeView === view && activeFolderId === null) return;
     setActiveView(view);
+    setActiveFolderId(null);
     setIsMobileMenuOpen(false);
+    window.history.pushState({ view, folderId: null }, '');
+  };
+
+  const handleFolderOpen = (folderId) => {
+    setActiveFolderId(folderId);
+    window.history.pushState({ view: 'Planes', folderId }, '');
+  };
+
+  const handleFolderClose = () => {
+    window.history.back();
   };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row font-sans" style={{ backgroundColor: colors.mainBg }}>
       
-      {/* Header Móvil */}
       <header className="md:hidden sticky top-0 z-50 p-4 flex items-center justify-between shadow-md" style={{ backgroundColor: colors.sidebarBg }}>
         <button onClick={() => handleNavClick('Inicio')} className="flex items-center gap-3 font-bold text-lg text-white focus:outline-none active:scale-95 transition-transform text-left">
           <div className="bg-white rounded-full p-0.5">
@@ -506,7 +581,6 @@ export default function App() {
         </button>
       </header>
 
-      {/* Barra Lateral (Sidebar) */}
       <aside 
         className={`p-6 flex flex-col transition-transform duration-300 ease-in-out shadow-2xl
           fixed top-[68px] right-0 bottom-0 w-full z-40
@@ -535,13 +609,20 @@ export default function App() {
         </div>
       </aside>
 
-      {/* Área de Contenido Principal */}
       <main className={`flex-grow p-5 sm:p-8 md:p-10 lg:p-12 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-30 md:opacity-100 overflow-hidden md:overflow-auto h-[calc(100vh-68px)] md:h-auto' : ''}`}>
         <div className="max-w-5xl mx-auto md:mt-0">
           {activeView === 'Inicio' && <InicioView />}
           {activeView === 'Reportes' && <ReportesView />}
           {activeView === 'Centralizadores' && <CentralizadoresView />}
-          {activeView === 'Planes' && <PlanesView />}
+          
+          {activeView === 'Planes' && (
+            <PlanesView 
+              activeFolderId={activeFolderId} 
+              onFolderOpen={handleFolderOpen} 
+              onFolderClose={handleFolderClose} 
+            />
+          )}
+          
           {activeView === 'Calendario' && <CalendarioView />}
         </div>
       </main>
