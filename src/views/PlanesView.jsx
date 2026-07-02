@@ -26,7 +26,7 @@ export default function PlanesView({ activeFolderId, onFolderOpen, onFolderClose
   return (
     <div className="pb-8">
       <div className="mb-10 animate-cascade" style={{ animationDelay: '0ms' }}>
-        <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight mb-2">Malla, Planes y Programas</h1>
+        <h1 className="text-3xl md:text-4xl font-display font-black text-slate-800 tracking-tight mb-2">Malla, Planes y Programas</h1>
         <p className="text-base text-slate-600">Navega por las carpetas para ver la estructura curricular y los planes de trabajo.</p>
       </div>
 
@@ -42,11 +42,16 @@ export default function PlanesView({ activeFolderId, onFolderOpen, onFolderClose
         </div>
       ) : (
         <div className="animate-cascade" style={{ animationDelay: '0ms' }}>
-          <button onClick={onFolderClose} className="flex items-center gap-2 text-slate-600 font-bold mb-6 active:scale-95 px-4 py-2 bg-slate-100 rounded-xl w-fit border border-slate-200 shadow-sm">
-            <ChevronLeft size={20} /> Volver a Carpetas
+          {/* Botón Volver estilizado */}
+          <button 
+            onClick={onFolderClose} 
+            className="flex items-center gap-2 text-slate-600 font-display font-bold mb-8 active:scale-95 px-5 py-2.5 bg-white hover:bg-slate-50 transition-all duration-300 rounded-2xl w-fit border border-slate-200/80 shadow-[0_4px_15px_rgba(0,0,0,0.02)] group hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+          >
+            <ChevronLeft size={18} strokeWidth={2.5} className="transition-transform duration-300 group-hover:-translate-x-0.5" /> 
+            Volver a Carpetas
           </button>
 
-          <h2 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-3 border-b border-slate-200 pb-4">
+          <h2 className="text-2xl font-display font-black text-slate-800 mb-8 flex items-center gap-3 border-b border-slate-200 pb-4">
             {activeFolder.id === 'malla' ? <BookOpen size={28} style={{color: colors.accent}}/> : <FolderOpen size={28} style={{color: colors.accent}}/>} 
             {activeFolder.title}
           </h2>
@@ -54,8 +59,9 @@ export default function PlanesView({ activeFolderId, onFolderOpen, onFolderClose
           {activeFolder.id === 'malla' ? (
             <div className="flex flex-col gap-8">
               <div className="w-full flex justify-center animate-cascade" style={{ animationDelay: '100ms' }}>
-                  <div className="bg-white p-4 md:p-8 rounded-[2rem] shadow-xl border-4 border-white w-full max-w-5xl" style={{ backgroundColor: colors.cardBg }}>
-                     <img src={conser5} alt="Malla Curricular" className="object-contain w-full" style={{ maxHeight: MALLA_IMAGE_MAX_HEIGHT }} />
+                  {/* Contenedor de Malla Curricular Premium */}
+                  <div className="p-4 md:p-8 rounded-[2.5rem] shadow-2xl border border-slate-200/50 w-full max-w-5xl transition-all duration-500 hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)]" style={{ backgroundColor: colors.cardBg }}>
+                     <img src={conser5} alt="Malla Curricular" className="object-contain w-full rounded-2xl" style={{ maxHeight: MALLA_IMAGE_MAX_HEIGHT }} />
                   </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
